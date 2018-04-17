@@ -1,0 +1,37 @@
+{
+  "name": "debuggler",
+  "description": "Resolves debug namespace like magic.",
+  "version": "1.0.1-ALPHA",
+  "main": "index.js",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "debug",
+    "log",
+    "debugger",
+    "automatic",
+    "wrapper"
+  ],
+  "scripts": {
+    "eslint": "eslint . --ext .js",
+    "test": "mocha",
+    "coverage": "nyc --reporter=html --reporter=lcov npm test"
+  },
+  "dependencies": {
+    "pkg-up": "^2.0.0"
+  },
+  "peerDependencies": {
+    "debug": "3.x"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "codeclimate-test-reporter": "^0.5.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0",
+    "mocha": "^5.1.0",
+    "nyc": "^11.6.0"
+  },
+  "engines": {
+    "node": ">=7.6.0"
+  }
+}

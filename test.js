@@ -6,7 +6,7 @@ const pkg = require('./package.json');
 before(() => {
   chai.should();
 
-  process.env.DEBUG = `debuggler:${pkg.version}*,debuggler:test*,debuggler@test*,TEST*`;
+  process.env.DEBUG = `debuggler,debuggler:${pkg.version}*,debuggler:test*,debuggler@test*,TEST*`;
 });
 
 describe('debuggler', () => {

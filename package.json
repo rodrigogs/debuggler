@@ -1,7 +1,7 @@
 {
   "name": "debuggler",
   "description": "Resolves debug namespace like magic.",
-  "version": "1.0.2-ALPHA",
+  "version": "1.1.1-ALPHA",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "keywords": [
@@ -17,6 +17,7 @@
     "coverage": "nyc --reporter=html --reporter=lcov npm test"
   },
   "dependencies": {
+    "caller-path": "^2.0.0",
     "pkg-up": "^2.0.0"
   },
   "peerDependencies": {

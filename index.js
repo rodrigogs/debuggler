@@ -1,5 +1,9 @@
+// eslint-disable-next-line
+'use strict';
+
 const path = require('path');
 const pkgUp = require('pkg-up');
+const callerPath = require('caller-path');
 
 /**
  * @param {String|Boolean|Object} [name = true] A string representing debug's namespace,
@@ -12,7 +16,7 @@ const pkgUp = require('pkg-up');
  *
  * @return {Function}
  */
-const debuggler = (name = true, version = false, separator = ':') => {
+module.exports = (name = true, version = false, separator = ':') => {
   const debugPkg = require('debug');
   const debug = debugPkg('debuggler');
 
@@ -28,7 +32,7 @@ const debuggler = (name = true, version = false, separator = ':') => {
   const resolveName = name === true;
   const resolveVersion = version === true;
 
-  const { filename } = module.parent;
+  const filename = callerPath();
   debug(`lib required from "${filename}"`);
 
   let dirname = path.dirname(filename);
@@ -66,5 +70,3 @@ const debuggler = (name = true, version = false, separator = ':') => {
 
   return debugPkg(namespace);
 };
-
-module.exports = debuggler;

@@ -12,7 +12,7 @@ const pkgUp = require('pkg-up');
  *
  * @return {Function}
  */
-module.exports = (name = true, version = false, separator = ':') => {
+const debuggler = (name = true, version = false, separator = ':') => {
   const debugPkg = require('debug');
   const debug = debugPkg('debuggler');
 
@@ -50,8 +50,8 @@ module.exports = (name = true, version = false, separator = ':') => {
   const absolute = path.parse(filename);
   const paths = [];
 
-  if (resolveName || name) paths.push(name);
-  if (resolveVersion || version) paths.push(version);
+  if (name) paths.push(name);
+  if (version) paths.push(version);
 
   const dirs = absolute.dir
     .replace(dirname, '')
@@ -66,3 +66,5 @@ module.exports = (name = true, version = false, separator = ':') => {
 
   return debugPkg(namespace);
 };
+
+module.exports = debuggler;

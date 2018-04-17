@@ -1,7 +1,7 @@
 {
   "name": "debuggler",
   "description": "Resolves debug namespace like magic.",
-  "version": "1.0.1-ALPHA",
+  "version": "1.0.2-ALPHA",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "keywords": [

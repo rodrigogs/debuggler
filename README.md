@@ -4,8 +4,7 @@
 [![Code Climate](https://codeclimate.com/github/rodrigogs/debuggler/badges/gpa.svg)](https://codeclimate.com/github/rodrigogs/debuggler)
 [![Test Coverage](https://codeclimate.com/github/rodrigogs/debuggler/badges/coverage.svg)](https://codeclimate.com/github/rodrigogs/debuggler/coverage)
 
-**debuggler** is a [visionmedia/debug](https://github.com/visionmedia/debug) wrapper that is able to resolve it's caller path and package.json information,
-so it needs no configuration.
+**debuggler** is a [visionmedia/debug](https://github.com/visionmedia/debug) wrapper that is able to resolve it's caller path and package.json information, so it needs no namespace configuration.
 
 ### Install
 ```bash

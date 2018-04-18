@@ -11,6 +11,8 @@ rules:
   no-underscore-dangle: off
   import/extensions: off
   prefer-destructuring: off
+  strict: off
+  max-len: off
 globals:
   process: on
   describe: on

@@ -1,4 +1,5 @@
-// eslint-disable-next-line
+// caller-path only works using strict mode
+
 'use strict';
 
 const path = require('path');
@@ -6,67 +7,121 @@ const pkgUp = require('pkg-up');
 const callerPath = require('caller-path');
 
 /**
- * @param {String|Boolean|Object} [name = true] A string representing debug's namespace,
- * true to get package.json name or an option object.
+ * @param {String} what
+ * @return {Boolean}
+ */
+const isString = (what) => {
+  return typeof what === 'string';
+};
+
+/**
+ * @param {Object} options
+ * @return {Object}
+ */
+const setDefaultOptions = options => Object.assign({}, options, {
+  namespace: undefined,
+  name: true,
+  version: false,
+  verSeparator: '@',
+  dirSeparator: ':',
+  file: true,
+  ext: false,
+});
+
+/**
+ * @param {Object} options
+ * @param {Object} pkg
+ * @return {String}
+ */
+const buildNamespace = (options, pkg) => {
+  const absolute = path.parse(options.filename);
+  const paths = [];
+
+  options.version = options.version === true
+    ? pkg.version
+    : (options.version || '');
+
+  options.name = options.name === true ? pkg.name : (options.name || '');
+  options.name = options.version
+    ? `${options.name}${options.verSeparator}${options.version}`
+    : options.name;
+
+  options.dirs = absolute.dir
+    .replace(options.dirname, '')
+    .split(path.sep)
+    .filter(dir => !!dir)
+    .join(options.dirSeparator);
+
+  options.file = options.file === true ? absolute.name : (options.file || '');
+  options.ext = options.ext === true ? absolute.ext : (options.ext || '');
+
+  if (options.name) paths.push(options.name);
+  if (options.dirs) paths.push(...options.dirs);
+  if (options.file) paths.push(options.file);
+  if (options.ext) paths.push(options.ext);
+
+  return paths.join(options.dirSeparator);
+};
+
+/**
+ * debuggler is a visionmedia/debug wrapper that is able to resolves it's caller path and package.json information,
+ * so it needs no configuration.
  *
- * @param {String|Boolean} [version = false] A string representing app's version, or true
- * to get package.json version.
+ * @example
+ * // /home/example/package.json
+ * //   name: example
+ * //   version: 1.0.0
+ * // /home/example/foo/bar.js
+ * process.env.DEBUG = 'example*';
  *
- * @param {String} [separator = ':'] Directory separator character.
+ * const debug = require('debuggler')({ version: true });
+ *
+ * debug('I know where I am!');
+ * // Should output: example@1.0.0:foo:bar I know where I am!
+ *
+ * @param {String|Object}   [options]                     Debug namespace string or an options object.
+ * @param {String}          [options.namespace]           Namespace is just passed to debug module, other options are ignored.
+ * @param {String}          [options.name = true]         Project name or true to get it from package.json.
+ * @param {String|Boolean}  [options.version = false]     Version string or true to get it from package.json.
+ * @param {String}          [options.verSeparator = '@']  Version separator character.
+ * @param {String}          [options.dirSeparator = ':']  Directory separator character.
+ * @param {String|Boolean}  [options.file = true]         File name or true to get the current one.
+ * @param {String|Boolean}  [options.ext = false]         File extension or true to get the current one.
  *
  * @return {Function}
  */
-module.exports = (name = true, version = false, separator = ':') => {
+const debuggler = (options) => {
   const debugPkg = require('debug');
   const debug = debugPkg('debuggler');
 
-  debug('configuring...');
-
-  if (typeof name === 'object') {
-    const opts = name;
-    separator = opts.separator || ':';
-    version = opts.version === undefined ? false : opts.version;
-    name = opts.name === undefined ? true : opts.name;
+  debug('configuring');
+  if (isString(options)) {
+    debug('namespace only, falling back to debug module');
+    return debugPkg(options);
   }
 
-  const resolveName = name === true;
-  const resolveVersion = version === true;
+  options = setDefaultOptions(options);
 
   const filename = callerPath();
   debug(`lib required from "${filename}"`);
 
   let dirname = path.dirname(filename);
 
-  if (resolveName || resolveVersion) {
-    debug('looking for parent app package.json');
+  debug('looking for parent app package.json');
+  const pkgFile = pkgUp.sync(dirname);
+  dirname = path.dirname(pkgFile);
+  debug(`parent app package.json is located at "${pkgFile}"`);
 
-    const pkgFile = pkgUp.sync(dirname);
-    dirname = path.dirname(pkgFile);
-    debug(`parent app package.json is located at "${pkgFile}"`);
+  const pkg = require(pkgFile);
 
-    const pkg = require(pkgFile);
-    debug(`resolved package.json for app "${pkg.name}"`);
+  options.dirname = dirname;
+  options.filename = filename;
 
-    if (resolveVersion) version = pkg.version || '';
-    if (resolveName) name = pkg.name || '';
-  }
-
-  const absolute = path.parse(filename);
-  const paths = [];
-
-  if (name) paths.push(name);
-  if (version) paths.push(version);
-
-  const dirs = absolute.dir
-    .replace(dirname, '')
-    .split(path.sep)
-    .filter(dir => !!dir);
-
-  paths.push(...dirs, absolute.name);
-
-  const namespace = paths.join(separator);
+  const namespace = buildNamespace(options, pkg);
 
   debug(`resolved namespace "${namespace}"`);
 
   return debugPkg(namespace);
 };
+
+module.exports = debuggler;

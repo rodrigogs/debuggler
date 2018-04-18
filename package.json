@@ -1,7 +1,7 @@
 {
   "name": "debuggler",
   "description": "Resolves debug namespace like magic.",
-  "version": "1.0.0-BETA",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "keywords": [
@@ -30,7 +30,8 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "mocha": "^5.1.0",
-    "nyc": "^11.6.0"
+    "nyc": "^11.6.0",
+    "test-console": "^1.1.0"
   },
   "engines": {
     "node": ">=7.6.0"

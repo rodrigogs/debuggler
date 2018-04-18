@@ -13,6 +13,7 @@ rules:
   prefer-destructuring: off
   strict: off
   max-len: off
+  no-console: off
 globals:
   process: on
   describe: on

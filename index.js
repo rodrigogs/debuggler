@@ -18,7 +18,7 @@ const isString = (what) => {
  * @param {Object} options
  * @return {Object}
  */
-const setDefaultOptions = options => Object.assign({}, options, {
+const setDefaultOptions = options => Object.assign({}, {
   namespace: undefined,
   name: true,
   version: false,
@@ -26,7 +26,29 @@ const setDefaultOptions = options => Object.assign({}, options, {
   dirSeparator: ':',
   file: true,
   ext: false,
-});
+}, options);
+
+const resolveVersion = (option, pkg) => (option === true
+  ? pkg.version
+  : (option || ''));
+
+const resolveName = (option, pkg) => (option === true
+  ? pkg.name
+  : (option || ''));
+
+const resolveDirs = (dir, options) => dir
+  .replace(options.dirname, '')
+  .split(path.sep)
+  .filter(dir => !!dir)
+  .join(options.dirSeparator);
+
+const resolveFile = (option, fileName) => (option === true
+  ? fileName
+  : (option || ''));
+
+const resolveExt = (option, ext) => (option === true
+  ? ext
+  : (option || ''));
 
 /**
  * @param {Object} options
@@ -37,28 +59,25 @@ const buildNamespace = (options, pkg) => {
   const absolute = path.parse(options.filename);
   const paths = [];
 
-  options.version = options.version === true
-    ? pkg.version
-    : (options.version || '');
+  const version = resolveVersion(options.version, pkg);
+  const name = resolveName(options.name, pkg);
+  const dirs = resolveDirs(absolute.dir, options);
+  const file = resolveFile(options.file, absolute.name);
+  const ext = resolveExt(options.ext, absolute.ext);
 
-  options.name = options.name === true ? pkg.name : (options.name || '');
-  options.name = options.version
-    ? `${options.name}${options.verSeparator}${options.version}`
-    : options.name;
+  if (version && name) {
+    paths.push(`${name}${options.verSeparator}${version}`);
+  } else if (name) {
+    paths.push(name);
+  }
 
-  options.dirs = absolute.dir
-    .replace(options.dirname, '')
-    .split(path.sep)
-    .filter(dir => !!dir)
-    .join(options.dirSeparator);
+  if (dirs) paths.push(dirs);
 
-  options.file = options.file === true ? absolute.name : (options.file || '');
-  options.ext = options.ext === true ? absolute.ext : (options.ext || '');
-
-  if (options.name) paths.push(options.name);
-  if (options.dirs) paths.push(...options.dirs);
-  if (options.file) paths.push(options.file);
-  if (options.ext) paths.push(options.ext);
+  if (file && ext) {
+    paths.push(`${file}${ext}`);
+  } else if (file) {
+    paths.push(file);
+  }
 
   return paths.join(options.dirSeparator);
 };
@@ -95,9 +114,9 @@ const debuggler = (options) => {
   const debug = debugPkg('debuggler');
 
   debug('configuring');
-  if (isString(options)) {
+  if (isString(options) || (options && options.namespace)) {
     debug('namespace only, falling back to debug module');
-    return debugPkg(options);
+    return debugPkg(options.namespace || options);
   }
 
   options = setDefaultOptions(options);

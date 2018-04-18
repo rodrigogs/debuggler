@@ -33,12 +33,12 @@ debug('I know where I am!');
 |------------------------|-----------------|---------------|----------------------------------------------------------------------|
 | options                | String\|Object  | `{}`          | Debug namespace string or an options object.                         |
 | options.namespace      | String          | `undefined`   | Namespace is just passed to debug module, other options are ignored. |
-| options.name           | String          | `true`        | Project name or true to get it from package.json.                    |
-| options.version        | String\|Boolean | `false`       | Version string or true to get it from package.json.                  |
+| options.name           | String          | `true`        | Project name or `true` to get it from `package.json`.                    |
+| options.version        | String\|Boolean | `false`       | Version string or `true` to get it from `package.json`.                  |
 | options.verSeparator   | String          | `'@'`         | Version separator character.                                         |
 | options.dirSeparator   | String          | `':'`         | Directory separator character.                                       |
-| options.file           | String\|Boolean | `true`        | File name or true to get the current one.                            |
-| options.ext            | String\|Boolean | `false`       | File extension or true to get the current one.                       |
+| options.file           | String\|Boolean | `true`        | File name or `true` to get the current one.                            |
+| options.ext            | String\|Boolean | `false`       | File extension or `true` to get the current one.                       |
 
 ### License
 [Licence](https://github.com/rodrigogs/debuggler/blob/master/LICENSE) © Rodrigo Gomes da Silva

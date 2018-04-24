@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rodrigogs/debuggler"
+  },
   "keywords": [
     "debug",
     "log",
